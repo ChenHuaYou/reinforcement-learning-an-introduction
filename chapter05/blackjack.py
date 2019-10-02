@@ -125,7 +125,7 @@ def play(policy_player, initial_state=None, initial_action=None):
             action = policy_player(usable_ace_player, player_sum, dealer_card1)
 
         # track player's trajectory for importance sampling
-        player_trajectory.append([(usable_ace_player, player_sum, dealer_card1), action])
+        player_trajectory.append([(usable_ace_player, player_sum, dealer_card1), action,0])
 
         if action == ACTION_STAND:
             break
@@ -224,13 +224,17 @@ def monte_carlo_es(episodes):
         initial_action = np.random.choice(ACTIONS)
         current_policy = behavior_policy if episode else target_policy_player
         _, reward, trajectory = play(current_policy, initial_state, initial_action)
+        G = 0
         for (usable_ace, player_sum, dealer_card), action in trajectory:
+            print((usable_ace, player_sum, dealer_card),action)
             usable_ace = int(usable_ace)
             player_sum -= 12
             dealer_card -= 1
             # update values of state-action pairs
+            G = 0 + 1 * G
             state_action_values[player_sum, dealer_card, usable_ace, action] += reward
             state_action_pair_count[player_sum, dealer_card, usable_ace, action] += 1
+        print('------------------')
 
     return state_action_values / state_action_pair_count
 
@@ -359,7 +363,7 @@ def figure_5_3():
 
 
 if __name__ == '__main__':
-    figure_5_1()
+    #figure_5_1()
     figure_5_2()
-    figure_5_3()
+    #figure_5_3()
 
