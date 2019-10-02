@@ -143,7 +143,8 @@ def play(policy_player, initial_state=None, initial_action=None):
             ace_count -= 1
         # player busts
         if player_sum > 21:
-            return state, -1, player_trajectory
+            player_trajectory[-1][-1] = -1
+            return player_trajectory
         assert player_sum <= 21
         usable_ace_player = (ace_count == 1)
 
@@ -165,17 +166,21 @@ def play(policy_player, initial_state=None, initial_action=None):
             ace_count -= 1
         # dealer busts
         if dealer_sum > 21:
-            return state, 1, player_trajectory
+            player_trajectory[-1][-1] = 1
+            return player_trajectory
         usable_ace_dealer = (ace_count == 1)
 
     # compare the sum between player and dealer
     assert player_sum <= 21 and dealer_sum <= 21
     if player_sum > dealer_sum:
-        return state, 1, player_trajectory
+        player_trajectory[-1][-1] = 1
+        return player_trajectory
     elif player_sum == dealer_sum:
-        return state, 0, player_trajectory
+        player_trajectory[-1][-1] = 0 
+        return player_trajectory
     else:
-        return state, -1, player_trajectory
+        player_trajectory[-1][-1] = -1
+        return player_trajectory
 
 # Monte Carlo Sample with On-Policy
 def monte_carlo_on_policy(episodes):
