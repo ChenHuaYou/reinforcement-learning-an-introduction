@@ -11,14 +11,13 @@
 # implements an asynchronous policy evaluation. This file also utilizes multi-processing for acceleration and contains
 # an answer to Exercise 4.5
 
-import numpy as np
-import matplotlib.pyplot as plt
-import math
-import tqdm
 import multiprocessing as mp
 from functools import partial
 import time
 import itertools
+import matplotlib.pyplot as plt
+import numpy as np
+
 
 ############# PROBLEM SPECIFIC CONSTANTS #######################
 MAX_CARS = 20
@@ -40,11 +39,12 @@ RETURNS_SECOND_LOC = 2
 poisson_cache = dict()
 
 
+
 def poisson(n, lam):
     global poisson_cache
     key = n * 10 + lam
     if key not in poisson_cache.keys():
-        poisson_cache[key] = math.exp(-lam) * math.pow(lam, n) / math.factorial(n)
+        poisson_cache[key] = np.exp(-lam) * np.power(lam, n) / np.math.factorial(n)
     return poisson_cache[key]
 
 
@@ -161,17 +161,17 @@ class PolicyIteration:
 
                 # probability for current combination of rental requests
                 prob = poisson(req1, RENTAL_REQUEST_FIRST_LOC) * \
-                       poisson(req2, RENTAL_REQUEST_SECOND_LOC)
+                    poisson(req2, RENTAL_REQUEST_SECOND_LOC)
                 for ret1 in range(0, self.TRUNCATE):
                     for ret2 in range(0, self.TRUNCATE):
                         num_of_cars_first_loc_ = min(num_of_cars_first_loc + ret1, MAX_CARS)
                         num_of_cars_second_loc_ = min(num_of_cars_second_loc + ret2, MAX_CARS)
                         prob_ = poisson(ret1, RETURNS_FIRST_LOC) * \
-                                poisson(ret2, RETURNS_SECOND_LOC) * prob
+                            poisson(ret2, RETURNS_SECOND_LOC) * prob
                         # Classic Bellman equation for state-value
                         # prob_ corresponds to p(s'|s,a) for each possible s' -> (num_of_cars_first_loc_,num_of_cars_second_loc_)
                         expected_return += prob_ * (
-                                reward + self.gamma * values[num_of_cars_first_loc_, num_of_cars_second_loc_])
+                            reward + self.gamma * values[num_of_cars_first_loc_, num_of_cars_second_loc_])
         return expected_return
 
     # Parallelization enforced different helper functions
@@ -185,7 +185,7 @@ class PolicyIteration:
     # Expected return calculator for Policy Improvement
     def expected_return_pi(self, values, action, state):
 
-        if ((action >= 0 and state[0] >= action) or (action < 0 and state[1] >= abs(action))) == False:
+        if ((action >= 0 and state[0] >= action) or (action < 0 and state[1] >= abs(action))) is False:
             return -float('inf'), state[0], state[1], action
         expected_return = self.bellman(values, action, state)
         return expected_return, state[0], state[1], action
@@ -199,8 +199,7 @@ class PolicyIteration:
         plt.show()
 
 
-if __name__ == '__main__':
-    TRUNCATE = 9
-    solver = PolicyIteration(TRUNCATE, parallel_processes=4, delta=1e-1, gamma=0.9, solve_4_5=True)
-    solver.solve()
-    solver.plot()
+TRUNCATE = 9
+solver = PolicyIteration(TRUNCATE, parallel_processes=4, delta=1e-1, gamma=0.9, solve_4_5=True)
+solver.solve()
+solver.plot()

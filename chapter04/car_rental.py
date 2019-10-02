@@ -13,6 +13,7 @@ import numpy as np
 import seaborn as sns
 from scipy.stats import poisson
 
+
 matplotlib.use('Agg')
 
 # maximum # of cars in each location
@@ -45,7 +46,8 @@ MOVE_CAR_COST = 2
 actions = np.arange(-MAX_MOVE_OF_CARS, MAX_MOVE_OF_CARS + 1)
 
 # An up bound for poisson distribution
-# If n is greater than this value, then the probability of getting n is truncated to 0
+# If n is greater than this value, then the probability of getting n is
+# truncated to 0
 POISSON_UPPER_BOUND = 11
 
 # Probability for poisson distribution
@@ -69,7 +71,8 @@ def expected_return(state, action, state_value, constant_returned_cars):
     @stateValue: state value matrix
     @constant_returned_cars:  if set True, model is simplified such that
     the # of cars returned in daytime becomes constant
-    rather than a random value from poisson distribution, which will reduce calculation time
+    rather than a random value from poisson distribution, which will reduce
+    calculation time
     and leave the optimal policy/value state matrix almost the same
     """
     # initailize total return
@@ -144,7 +147,6 @@ def figure_4_2(constant_returned_cars=True):
                     new_state_value = expected_return([i, j], policy[i, j], value, constant_returned_cars)
                     value[i, j] = new_state_value
             max_value_change = abs(old_value - value).max()
-            print('max value change {}'.format(max_value_change))
             if max_value_change < 1e-4:
                 break
 
@@ -174,7 +176,7 @@ def figure_4_2(constant_returned_cars=True):
             break
 
         iterations += 1
-
+    print(policy)
     plt.savefig('../images/figure_4_2.png')
     plt.close()
 
